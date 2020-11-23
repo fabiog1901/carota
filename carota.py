@@ -28,19 +28,24 @@ ENCLOSER = ''
 DELIMITER = ','
 ROWS = 10
 TEXT = 'index; uuid; firstname; lastname; int::start=18,end=95; date::delta=365'
-
+OUTPUT = ''
+CHUNK_SIZE = 100000
 
 def getArgs():
     """ Get command line args """
     parser = argparse.ArgumentParser(description='Generate data')
     parser.add_argument("-r", "--rows", dest='ROWS',
-                        default=ROWS, help='Number of Rows')
+                        default=ROWS, help='Number of rows, default <' + str(ROWS) + '>')
     parser.add_argument("-t", "--text", dest='TEXT',
-                        default=TEXT, help='Text')
+                        default=TEXT, help='Text, default <' + TEXT + '>')
     parser.add_argument("-d", "--delimiter", dest='DELIMITER',
-                        default=DELIMITER, help='Delimiter')
+                        default=DELIMITER, help='Delimiter, default <' + DELIMITER + '>')
     parser.add_argument("-e", "--encloser", dest='ENCLOSER',
-                        default=ENCLOSER, help='Encloser')
+                        default=ENCLOSER, help='Encloser, default <' + ENCLOSER + '>')
+    parser.add_argument("-o", "--output", dest='OUTPUT',
+                        default=OUTPUT, help='output filepath, default =  STDOUT')
+    parser.add_argument("-c", "--chunck-size", dest='CHUNK_SIZE',
+                        default=CHUNK_SIZE, help='count of rows to write to file at a time, default <' + str(CHUNK_SIZE) + '>')
     return parser.parse_args()
 
 
@@ -93,27 +98,21 @@ def get_tel():
 def get_uuid():
     return str(uuid.uuid4())
 
-def carota(rows=ROWS, text=TEXT, delimiter=DELIMITER, encloser=ENCLOSER):
-
-    # get command line args
-    options = getArgs()
-
-    options.ROWS = options.ROWS if rows is None else rows
-    options.TEXT = options.TEXT if text is None else text
-    options.DELIMITER = options.DELIMITER if delimiter is None else delimiter
-    options.ENCLOSER = options.ENCLOSER if encloser is None else encloser
-
-    #text = 'index string:size=10 tel ssn int:start=0,end=999999999 date:delta=365,start=2200-01-01 uuid lastname firstname gender uuid'
+def carota(rows=ROWS, 
+            text=TEXT, 
+            delimiter=DELIMITER, 
+            encloser=ENCLOSER, 
+            output=OUTPUT, 
+            chunk_size=CHUNK_SIZE):
     
-    options.DELIMITER = '\t' if options.DELIMITER == '\\t' else options.DELIMITER
-    p = options.TEXT.split(';')
+    p = text.split(';')
     d = []
     gender = None
 
     for i in p:
         d.append((i.strip().split("::")))
 
-    for r in range(int(options.ROWS)):
+    for r in range(rows):
         y = []
         # loop through the dict of field:parameter's
         for j in d:
@@ -163,11 +162,47 @@ def carota(rows=ROWS, text=TEXT, delimiter=DELIMITER, encloser=ENCLOSER):
             else:
                 y.append('')
 
-        print(options.DELIMITER.join(
-            map(str, [f'{options.ENCLOSER}{k}{options.ENCLOSER}' for k in y])))
+        yield delimiter.join(map(str, [f'{encloser}{k}{encloser}' for k in y]))
 
 def main():
-    carota()
+    options = getArgs()
 
+    # trick to allow passing tab as a delimiter   
+    options.DELIMITER = '\t' if options.DELIMITER == '\\t' else options.DELIMITER
+
+    iterator = carota(rows = int(options.ROWS), 
+                        text = options.TEXT, 
+                        delimiter = options.DELIMITER, 
+                        encloser = options.ENCLOSER)
+    
+    l = []
+    hasMore = True
+    sum = 0
+
+    if options.OUTPUT == '':
+        for v in iterator:
+            print(v)
+    else:
+        # create/override file
+        with open(options.OUTPUT, 'w') as f:
+            pass
+
+        while hasMore:
+            for i in range(int(options.CHUNK_SIZE)):
+                try:
+                    l.append(next(iterator))
+                    
+                except StopIteration:
+                    hasMore = False
+                    break
+            
+
+            with open(options.OUTPUT, 'a') as f:
+                f.write('\n'.join(l))
+
+            sum = sum + i + 1
+            print("written lines: " + str(sum))
+            l=[]
+            
 if __name__ == "__main__":
     main()
