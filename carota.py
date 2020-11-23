@@ -93,7 +93,7 @@ def get_tel():
 def get_uuid():
     return str(uuid.uuid4())
 
-def main(rows=ROWS, text=TEXT, delimiter=DELIMITER, encloser=ENCLOSER):
+def carota(rows=ROWS, text=TEXT, delimiter=DELIMITER, encloser=ENCLOSER):
 
     # get command line args
     options = getArgs()
@@ -166,6 +166,8 @@ def main(rows=ROWS, text=TEXT, delimiter=DELIMITER, encloser=ENCLOSER):
         print(options.DELIMITER.join(
             map(str, [f'{options.ENCLOSER}{k}{options.ENCLOSER}' for k in y])))
 
+def main():
+    carota()
 
 if __name__ == "__main__":
     main()
