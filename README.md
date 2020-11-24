@@ -35,9 +35,9 @@ or it can be imported in a Python file
 '3,e33d7468-0a3c-4071-94ac-472f64a1fd1f,Agnes,Zavala,23,2020-11-24 07:33:38.1772276'
 ```
 
-## Options
+## Arguments
 
-`carota` takes below paramters
+`carota` takes below arguments:
 
 ```text
   -r, --rows        Number of rows, defaults to 10
@@ -49,9 +49,9 @@ or it can be imported in a Python file
   -c, --chunck-size count of rows to write to file at a time, defaults to 100000
 ```
 
-### Built-in Text fields
+### Built-in fields
 
-`carota` has a good few built-in fields that can take parameters. These built-ins are concatenated and passed to the `text` argument.
+`carota` has a good few built-in fields that can take options. These built-ins are concatenated and passed to the `text` argument.
 
 Multiple fields are separated with `;`.
 Options are passed with `::`, assigned with `=` and separated with `,`.
