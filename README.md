@@ -53,7 +53,9 @@ or it can be imported in a Python file
 
 `carota` has a good few built-in fields that can take parameters. These built-ins are concatenated and passed to the `text` argument.
 
-Multiple fields are separated with `;`. Options are passed with `::`, assigned with `=` and separated with `,`.
+Multiple fields are separated with `;`.
+Options are passed with `::`, assigned with `=` and separated with `,`.
+
 Example `field1; field2::option1=value1,option2=value2; field3`
 
 | field     | description                                    | options | default value           |
@@ -65,14 +67,13 @@ Example `field1; field2::option1=value1,option2=value2; field3`
 | string    | generate string                                | size    | 40                      |
 | date      | generate date                                  | start   | today's date            |
 |           |                                                | delta   | 365                     |
-|           |                                                | format  | "%Y-%m-%d %H:%M:%S.%f6" |
+|           |                                                | format  | %Y-%m-%d %H:%M:%S.%f6   |
 | uuid      | generate UUID                                  |         |                         |
 | tel       | generate tel number with format (###) ###-#### |         |                         |
 | ssn       | generate SSN with format ###-##-####           |         |                         |
 | lastname  | generate lastname                              |         |                         |
-| firstname | generate firstname                             | gender  | 'f' pr 'm'              |
+| firstname | generate firstname                             | gender  | 'f' or 'm'              |
 | gender    | generate gender ('F' or 'M')                   |         |                         |
-
 
 ### Example
 
