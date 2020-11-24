@@ -1,6 +1,12 @@
 # carota: Python random data CSV generator
 
-`carota` is a simple random data CSV generator.
+`carota` is a simple random data CSV generator. The project is [hosted on PyPi](https://pypi.org/project/carota/).
+
+## Installation
+
+```bash
+pip install carota
+```
 
 ## Usage
 
