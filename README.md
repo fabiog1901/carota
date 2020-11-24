@@ -41,10 +41,11 @@ or it can be imported in a Python file
 
 ```text
   -r, --rows        Number of rows, defaults to 10
-  -t, --text        Text to generate from built-in fields, defaults to <index; uuid; firstname; lastname; int::start=18,end=95; date::delta=365>
+  -t, --text        Text to generate from built-in fields,
+                    defaults to <index; uuid; firstname; lastname; int::start=18,end=95; date::delta=365>
   -d, --delimiter   Delimiter, defaults to ','
   -e, --encloser    Encloser, default the empty string
-  -o, --output      output filepath, default = STDOUT
+  -o, --output      output filepath, defaults to STDOUT
   -c, --chunck-size count of rows to write to file at a time, defaults to 100000
 ```
 
