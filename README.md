@@ -55,7 +55,6 @@ or it can be imported in a Python file
 Multiple fields are separated with `;`. Options are passed with `::`, assigned with `=` and separated with `,`.
 Example `field1; field2::option1=value1,option2=value2; field3`
 
-```text
 | field     | description                                    | options | default value           |
 |-----------|------------------------------------------------|---------|-------------------------|
 | index     | row number                                     |         |                         |
@@ -72,7 +71,7 @@ Example `field1; field2::option1=value1,option2=value2; field3`
 | lastname  | generate lastname                              |         |                         |
 | firstname | generate firstname                             | gender  | 'f' pr 'm'              |
 | gender    | generate gender ('F' or 'M')                   |         |                         |
-```
+
 
 ### Example
 
