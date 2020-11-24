@@ -62,7 +62,8 @@ def main():
             
 
             with open(options.OUTPUT, 'a') as f:
-                f.write('\n'.join(l))
+                f.write('\n'.join(l) + '\n')
+
 
             sum = sum + i + 1
             print("written lines: " + str(sum))
