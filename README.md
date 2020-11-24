@@ -1,6 +1,6 @@
-# carota: Python CSV Generator
+# carota: Python random data CSV generator
 
-Generate CSV files
+`carota` is a simple random data CSV generator.
 
 ## Usage
 

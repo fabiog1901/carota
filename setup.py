@@ -10,8 +10,8 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="carota",
-    version="0.0.5",
-    description="CSV Generator for Python",
+    version="0.0.6",
+    description="Python random data CSV generator.",
     long_description=README,
     long_description_content_type="text/markdown",
     url="https://github.com/fabiog1901/carota",
