@@ -66,7 +66,7 @@ Example `field1; field2::option1=value1,option2=value2; field3`
 
 | field     | description                                    | options | default value           |
 |-----------|------------------------------------------------|---------|-------------------------|
-| index     | row number                                     |         |                         |
+| index     | row number                                     | start   | 1                        |
 | constant  | repeats same value                             | value   |                         |
 | int       | generate int                                   | start   | 0                       |
 |           |                                                | end     | 100                     |

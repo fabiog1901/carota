@@ -73,7 +73,17 @@ def get_tel():
     return '(' + f'{random.randint(100, 999):03}' + ') ' + f'{random.randint(1, 999):03}' + '-' + f'{random.randint(1, 9999):04}'
 
 def get_uuid():
-    return str(uuid.uuid4())
+    return uuid.uuid4()
+
+def get_fields(text):
+    fields = [x.strip().split("::") for x in text.split(';')]
+    for f in fields:
+        if len(f) == 2:
+            f[1] = {k.strip(): v.strip() for k, v in (x.split('=') for x in f[1].split(','))}
+        else:
+            f.append({})
+
+    return tuple(fields)
 
 def carota(rows=ROWS, 
             text=TEXT, 
@@ -82,61 +92,51 @@ def carota(rows=ROWS,
             output=OUTPUT, 
             chunk_size=CHUNK_SIZE):
     
-    p = text.split(';')
-    d = []
+
     gender = None
-
-    for i in p:
-        d.append((i.strip().split("::")))
-
+    fields = get_fields(text)
+    
     for r in range(rows):
         y = []
-        # loop through the dict of field:parameter's
-        for j in d:
-            # create a dict with all the parameters for the field
-            opts = {}
-            if len(j) == 2:
-                opts = {k.strip(): v.strip() for k, v in (l.split('=')
-                                                          for l in j[1].split(','))}
+        for f in fields:
+            if f[0] == 'index':
+                y.append(r + int(f[1].get('start', 1)))
 
-            if j[0] == 'index':
-                y.append(r+1)
+            elif f[0] == 'constant':
+                y.append(f[1]['value'])
 
-            elif j[0] == 'constant':
-                y.append(opts['value'])
+            elif f[0] == 'int':
+                y.append(get_int(f[1].get('start', INT_START),
+                                 f[1].get('end', INT_END)))
 
-            elif j[0] == 'int':
-                y.append(get_int(opts.get('start', INT_START),
-                                 opts.get('end', INT_END)))
+            elif f[0] == 'string':
+                y.append(get_string(f[1].get('size', STRING_SIZE)))
 
-            elif j[0] == 'string':
-                y.append(get_string(opts.get('size', STRING_SIZE)))
+            elif f[0] == 'date':
+                y.append(get_date(start=f[1].get('start', None), 
+                                  delta=f[1].get('delta', DATE_DELTA), 
+                                  format=f[1].get('format', DATE_FORMAT)))
 
-            elif j[0] == 'date':
-                y.append(get_date(start=opts.get('start', None), 
-                                  delta=opts.get('delta', DATE_DELTA), 
-                                  format=opts.get('format', DATE_FORMAT)))
-
-            elif j[0] == 'uuid':
+            elif f[0] == 'uuid':
                 y.append(get_uuid())
 
-            elif j[0] == 'tel':
+            elif f[0] == 'tel':
                 y.append(get_tel())
 
-            elif j[0] == 'ssn':
+            elif f[0] == 'ssn':
                 y.append(get_ssn())
 
-            elif j[0] == 'lastname':
+            elif f[0] == 'lastname':
                 y.append(get_lastname())
 
-            elif j[0] == 'firstname':
-                gender, name = get_firstname(opts.get('gender', None))
+            elif f[0] == 'firstname':
+                gender, name = get_firstname(f[1].get('gender', None))
                 y.append(name)
 
-            elif j[0] == 'gender':
+            elif f[0] == 'gender':
                 y.append(get_gender(gender))
                 
             else:
                 y.append('')
 
-        yield delimiter.join(map(str, [f'{encloser}{k}{encloser}' for k in y]))
+        yield delimiter.join([f'{encloser}{k}{encloser}' for k in y])
