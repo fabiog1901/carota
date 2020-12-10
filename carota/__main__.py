@@ -23,7 +23,8 @@ def getArgs():
     parser.add_argument("-o", "--output", dest='OUTPUT',
                         default=OUTPUT, help='output filepath, default =  STDOUT')
     parser.add_argument("-c", "--chunck-size", dest='CHUNK_SIZE',
-                        default=CHUNK_SIZE, help='count of rows to write to file at a time, default <' + str(CHUNK_SIZE) + '>')
+                        default=CHUNK_SIZE, help='count of rows to write to file at a time, default <' + str(CHUNK_SIZE) + '>'),
+    parser.add_argument("--append", action='store_true', help='Whether to append to the output file.')                    
     return parser.parse_args()
 
 
@@ -48,8 +49,9 @@ def main():
             print(v)
     else:
         # create/override file
-        with open(options.OUTPUT, 'w') as f:
-            pass
+        if not options.append:
+            with open(options.OUTPUT, 'w') as f:
+                pass
 
         while hasMore:
             for i in range(int(options.CHUNK_SIZE)):
