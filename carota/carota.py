@@ -26,17 +26,31 @@ TEXT = 'index; uuid; firstname; lastname; int::start=18,end=95; date::delta=365'
 OUTPUT = ''
 CHUNK_SIZE = 100000
 
-def get_date(start, delta, format):
+class FabDate:
+    def __init__(self, start, delta, format):
+        self.start = start
+        self.delta = int(delta)
+        self.format = format
+        self.today = DATE_START if self.start is None else datetime.datetime.strptime(self.start, '%Y-%m-%d').date()
 
-    date = DATE_START if start is None else datetime.datetime.strptime(start, '%Y-%m-%d').date() + \
-        datetime.timedelta(random.randint(-1 * int(delta), int(delta)))
+    def generator(self):
+        date = self.today + datetime.timedelta(random.randint(-1 * self.delta, self.delta))
 
-    hour = random.randint(0, 23)
-    minute = random.randint(0, 59)
-    second = random.randint(0, 59)
-    millis = random.randint(0, 999999)
+        hour = random.randint(0, 23)
+        minute = random.randint(0, 59)
+        second = random.randint(0, 59)
+        millis = random.randint(0, 999999)
 
-    return datetime.datetime.combine(date, datetime.time(hour, minute, second, millis)).strftime(format)
+        yield datetime.datetime.combine(date, datetime.time(hour, minute, second, millis)).strftime(self.format)
+
+class FabUUID:
+    def __init__(self, seed):
+        self.rd = random.Random()
+        if seed is not None:
+            self.rd.seed(int(seed))
+
+    def generator(self):
+        yield uuid.UUID(int=self.rd.getrandbits(128), version=4)
 
 def get_firstname(gender):
     if gender is None:
@@ -77,30 +91,23 @@ def get_string(size):
 def get_tel():
     return '(' + f'{random.randint(100, 999):03}' + ') ' + f'{random.randint(1, 999):03}' + '-' + f'{random.randint(1, 9999):04}'
 
-class Fab_UUID:
-    def __init__(self, seed):
-        self.rd = random.Random()
-        self.rd.seed(int(seed))
-
-    def uuid_iter(self):
-        yield uuid.UUID(int=self.rd.getrandbits(128), version=4)
-
-def get_uuid(iter):
-    if iter is None:
-        return uuid.uuid4()
-    else:
-        return next(iter.uuid_iter())
-
 def get_fields(text):
     fields = [x.strip().split("::") for x in text.split(';')]
+
     for f in fields:
         if len(f) == 2:
             f[1] = {k.strip(): v.strip() for k, v in (x.split('=') for x in f[1].split(','))}
-            if f[0] == 'uuid' and 'seed' in f[1]:
-                f[1]['iter'] = Fab_UUID(f[1]['seed'])
-
         else:
             f.append({})
+
+        if f[0] == 'uuid':
+            f[1] = FabUUID(f[1].get('seed', None))
+        
+        elif f[0] == 'date':
+            f[1] = FabDate(f[1].get('start', None), delta=f[1].get('delta', DATE_DELTA), format=f[1].get('format', DATE_FORMAT))
+        
+        else:
+            pass
 
     return tuple(fields)
 
@@ -135,12 +142,10 @@ def carota(rows=ROWS,
                 y.append(get_string(f[1].get('size', STRING_SIZE)))
 
             elif f[0] == 'date':
-                y.append(get_date(start=f[1].get('start', None), 
-                                  delta=f[1].get('delta', DATE_DELTA), 
-                                  format=f[1].get('format', DATE_FORMAT)))
+                y.append(next(f[1].generator()))
 
             elif f[0] == 'uuid':
-                y.append(get_uuid(f[1].get('iter', None)))
+                y.append(next(f[1].generator()))
 
             elif f[0] == 'tel':
                 y.append(get_tel())
