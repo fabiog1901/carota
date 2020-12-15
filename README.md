@@ -73,6 +73,7 @@ Example `field1; field2::option1=value1,option2=value2; field3`
 |           |                                                | weight  |                         |
 | int       | generate int                                   | start   | 0                       |
 |           |                                                | end     | 100                     |
+|           |                                                | seed    | None                    |
 | string    | generate string                                | size    | 40                      |
 | date      | generate date                                  | start   | today's date            |
 |           |                                                | delta   | 365                     |

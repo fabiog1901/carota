@@ -52,6 +52,17 @@ class FabUUID:
     def generator(self):
         yield uuid.UUID(int=self.rd.getrandbits(128), version=4)
 
+class FabInt:
+    def __init__(self, start, end, seed):
+        self.rd = random.Random()
+        self.start = int(start)
+        self.end = int(end)
+        if seed is not None:
+            self.rd.seed(int(seed))
+
+    def generator(self):
+        yield self.rd.randint(self.start, self.end)
+
 def get_firstname(gender):
     if gender is None:
         # 0 = female, 1 = male
@@ -100,6 +111,9 @@ def get_fields(text):
         else:
             f.append({})
 
+        if f[0] == 'int':
+            f[1] = FabInt(f[1].get('start', INT_START), f[1].get('end', INT_END), f[1].get('seed', None))
+
         if f[0] == 'uuid':
             f[1] = FabUUID(f[1].get('seed', None))
         
@@ -135,8 +149,7 @@ def carota(rows=ROWS,
                 y.append(f[1]['value'])
 
             elif f[0] == 'int':
-                y.append(get_int(f[1].get('start', INT_START),
-                                 f[1].get('end', INT_END)))
+                y.append(next(f[1].generator()))
 
             elif f[0] == 'string':
                 y.append(get_string(f[1].get('size', STRING_SIZE)))
