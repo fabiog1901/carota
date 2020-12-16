@@ -31,19 +31,22 @@ CHUNK_SIZE = 100000
 gender = None
 
 class FabDate:
-    def __init__(self, start, delta, format):
+    def __init__(self, start, delta, format, seed):
+        self.rd = random.Random()
+        if seed is not None:
+            self.rd.seed(int(seed))
         self.start = start
         self.delta = int(delta)
         self.format = format
         self.today = DATE_START if self.start is None else datetime.datetime.strptime(self.start, '%Y-%m-%d').date()
 
     def generator(self):
-        date = self.today + datetime.timedelta(random.randint(-1 * self.delta, self.delta))
+        date = self.today + datetime.timedelta(self.rd.randint(-1 * self.delta, self.delta))
 
-        hour = random.randint(0, 23)
-        minute = random.randint(0, 59)
-        second = random.randint(0, 59)
-        millis = random.randint(0, 999999)
+        hour = self.rd.randint(0, 23)
+        minute = self.rd.randint(0, 59)
+        second = self.rd.randint(0, 59)
+        millis = self.rd.randint(0, 999999)
 
         yield datetime.datetime.combine(date, datetime.time(hour, minute, second, millis)).strftime(self.format)
 
@@ -203,7 +206,7 @@ def get_fields(text):
             f[1] = FabLastName(f[1].get('seed', None))
 
         elif f[0] == 'date':
-            f[1] = FabDate(f[1].get('start', None), delta=f[1].get('delta', DATE_DELTA), format=f[1].get('format', DATE_FORMAT))
+            f[1] = FabDate(f[1].get('start', None), f[1].get('delta', DATE_DELTA), f[1].get('format', DATE_FORMAT), f[1].get('seed', None))
         
         elif f[0] == 'choices':
             f[1] = FabChoices(f[1]['list'].split(" "), f[1].get('weights', None), f[1].get('seed', None))
