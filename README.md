@@ -71,17 +71,23 @@ Example `field1; field2::option1=value1,option2=value2; field3`
 | constant  | repeats same value                             | value   |                         |
 | choice    | pick from list of possible value               | list    |                         |
 |           |                                                | weight  |                         |
+|           |                                                | seed    | None                    |
 | int       | generate int                                   | start   | 0                       |
 |           |                                                | end     | 100                     |
 |           |                                                | seed    | None                    |
 | string    | generate string                                | size    | 40                      |
+|           |                                                | seed    | None                    |
 | date      | generate date                                  | start   | today's date            |
 |           |                                                | delta   | 365                     |
 |           |                                                | format  | %Y-%m-%d %H:%M:%S.%f6   |
+|           |                                                | seed    | None                    |
 | uuid      | generate UUID                                  | seed    | None                    |
 | tel       | generate tel number with format (###) ###-#### |         |                         |
+|           |                                                | seed    | None                    |
 | ssn       | generate SSN with format ###-##-####           |         |                         |
+|           |                                                | seed    | None                    |
 | lastname  | generate lastname                              |         |                         |
+|           |                                                | seed    | None                    |
 | firstname | generate firstname                             | gender  | 'f' or 'm'              |
 | gender    | generate gender ('F' or 'M')                   |         |                         |
 

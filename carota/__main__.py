@@ -5,7 +5,7 @@ import argparse
 ENCLOSER = ''
 DELIMITER = ','
 ROWS = 10
-TEXT = 'index; uuid; firstname; lastname; int::start=18,end=95; date::delta=365'
+TEXT = 'ssn::seed=12;tel::seed=345'
 OUTPUT = ''
 CHUNK_SIZE = 100000
 
@@ -35,7 +35,7 @@ def main():
     # trick to allow passing tab as a delimiter   
     options.DELIMITER = '\t' if options.DELIMITER == '\\t' else options.DELIMITER
 
-    iterator = carota.carota(rows = int(options.ROWS), 
+    iterator = carota(rows = int(options.ROWS), 
                         text = options.TEXT, 
                         delimiter = options.DELIMITER, 
                         encloser = options.ENCLOSER)

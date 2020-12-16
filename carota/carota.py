@@ -26,6 +26,10 @@ TEXT = 'index; uuid; firstname; lastname; int::start=18,end=95; date::delta=365'
 OUTPUT = ''
 CHUNK_SIZE = 100000
 
+#Globals
+index_start = 1
+constant = ''
+
 class FabDate:
     def __init__(self, start, delta, format):
         self.start = start
@@ -63,6 +67,57 @@ class FabInt:
     def generator(self):
         yield self.rd.randint(self.start, self.end)
 
+class FabString:
+    def __init__(self, size, seed):
+        self.rd = random.Random()
+        self.size = int(size)
+        if seed is not None:
+            self.rd.seed(int(seed))
+
+    def generator(self):
+        yield ''.join(self.rd.choice(string.ascii_letters + string.digits) for x in range(self.size))
+
+class FabChoices:
+    def __init__(self, choices, weights, seed):
+        self.rd = random.Random()
+        self.choices = choices
+        if weights is not None:
+            self.weights = [float(x) for x in weights.split(' ')]
+        else:
+            self.weights = None
+        if seed is not None:
+            self.rd.seed(int(seed))
+
+    def generator(self):
+        yield self.rd.choices(self.choices, weights=self.weights, k=1)[0]
+
+class FabLastName:
+    def __init__(self, seed):
+        self.rd = random.Random()
+        if seed is not None:
+            self.rd.seed(int(seed))
+
+    def generator(self):
+        yield self.rd.choice(LASTNAME)
+
+class FabTel:
+    def __init__(self, seed):
+        self.rd = random.Random()
+        if seed is not None:
+            self.rd.seed(int(seed))
+
+    def generator(self):
+        yield '(' + f'{self.rd.randint(100, 999):03}' + ') ' + f'{self.rd.randint(1, 999):03}' + '-' + f'{self.rd.randint(1, 9999):04}'
+
+class FabSSN:
+    def __init__(self, seed):
+        self.rd = random.Random()
+        if seed is not None:
+            self.rd.seed(int(seed))
+
+    def generator(self):
+        yield f'{self.rd.randint(1, 999):03}' + '-' + f'{self.rd.randint(1, 99):02}' + '-' + f'{self.rd.randint(1, 9999):04}'
+
 def get_firstname(gender):
     if gender is None:
         # 0 = female, 1 = male
@@ -76,31 +131,11 @@ def get_firstname(gender):
     else:
         return 1, random.choice(MALE_NAMES)
     
-def get_lastname():
-    return random.choice(LASTNAME)
-
 def get_gender(gender):
     if gender is None:
         return random.choice(GENDER_LIST)
     else:
         return GENDER_LIST[gender]
-
-def get_int(start, end):
-    return random.randint(int(start), int(end))
-
-def get_choices(choices, weights):
-    if weights is not None:
-        weights = [float(x) for x in weights.split(' ')]
-    return random.choices(choices, weights=weights, k=1)[0]
-
-def get_ssn():
-    return f'{random.randint(1, 999):03}' + '-' + f'{random.randint(1, 99):02}' + '-' + f'{random.randint(1, 9999):04}'
-
-def get_string(size):
-    return ''.join(random.choice(string.ascii_letters + string.digits) for x in range(int(size)))
-
-def get_tel():
-    return '(' + f'{random.randint(100, 999):03}' + ') ' + f'{random.randint(1, 999):03}' + '-' + f'{random.randint(1, 9999):04}'
 
 def get_fields(text):
     fields = [x.strip().split("::") for x in text.split(';')]
@@ -113,13 +148,36 @@ def get_fields(text):
 
         if f[0] == 'int':
             f[1] = FabInt(f[1].get('start', INT_START), f[1].get('end', INT_END), f[1].get('seed', None))
+        
+        elif f[0] == 'index':
+            global index_start
+            index_start = int(f[1].get('start', 1))
+        
+        elif f[0] == 'constant':
+            global constant
+            constant = f[1]['value']
 
-        if f[0] == 'uuid':
+        elif f[0] == 'uuid':
             f[1] = FabUUID(f[1].get('seed', None))
         
+        elif f[0] == 'ssn':
+            f[1] = FabSSN(f[1].get('seed', None))
+        
+        elif f[0] == 'tel':
+            f[1] = FabTel(f[1].get('seed', None))
+
+        elif f[0] == 'lastname':
+            f[1] = FabLastName(f[1].get('seed', None))
+
         elif f[0] == 'date':
             f[1] = FabDate(f[1].get('start', None), delta=f[1].get('delta', DATE_DELTA), format=f[1].get('format', DATE_FORMAT))
         
+        elif f[0] == 'choices':
+            f[1] = FabChoices(f[1]['list'].split(" "), f[1].get('weights', None), f[1].get('seed', None))
+
+        elif f[0] == 'string':
+            f[1] = FabString(f[1].get('size', STRING_SIZE), f[1].get('seed', None))
+
         else:
             pass
 
@@ -132,42 +190,19 @@ def carota(rows=ROWS,
             output=OUTPUT, 
             chunk_size=CHUNK_SIZE):
     
-
     gender = None
     fields = get_fields(text)
+    global index_start
+    global constant
 
     for r in range(rows):
         y = []
         for f in fields:
             if f[0] == 'index':
-                y.append(r + int(f[1].get('start', 1)))
-
-            elif f[0] == 'choices':
-                y.append(get_choices(f[1]['list'].split(" "), f[1].get('weights', None)))
+                y.append(r + index_start)
 
             elif f[0] == 'constant':
-                y.append(f[1]['value'])
-
-            elif f[0] == 'int':
-                y.append(next(f[1].generator()))
-
-            elif f[0] == 'string':
-                y.append(get_string(f[1].get('size', STRING_SIZE)))
-
-            elif f[0] == 'date':
-                y.append(next(f[1].generator()))
-
-            elif f[0] == 'uuid':
-                y.append(next(f[1].generator()))
-
-            elif f[0] == 'tel':
-                y.append(get_tel())
-
-            elif f[0] == 'ssn':
-                y.append(get_ssn())
-
-            elif f[0] == 'lastname':
-                y.append(get_lastname())
+                y.append(constant)
 
             elif f[0] == 'firstname':
                 gender, name = get_firstname(f[1].get('gender', None))
@@ -177,6 +212,6 @@ def carota(rows=ROWS,
                 y.append(get_gender(gender))
                 
             else:
-                y.append('')
+                y.append(next(f[1].generator()))
 
         yield delimiter.join([f'{encloser}{k}{encloser}' for k in y])
