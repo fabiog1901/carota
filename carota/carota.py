@@ -28,7 +28,6 @@ CHUNK_SIZE = 100000
 
 #Globals
 index_start = 1
-constant = ''
 
 class FabDate:
     def __init__(self, start, delta, format):
@@ -46,6 +45,13 @@ class FabDate:
         millis = random.randint(0, 999999)
 
         yield datetime.datetime.combine(date, datetime.time(hour, minute, second, millis)).strftime(self.format)
+
+class FabConstant:
+    def __init__(self, value):
+        self.value = value
+
+    def generator(self):
+        yield self.value
 
 class FabUUID:
     def __init__(self, seed):
@@ -154,8 +160,7 @@ def get_fields(text):
             index_start = int(f[1].get('start', 1))
         
         elif f[0] == 'constant':
-            global constant
-            constant = f[1]['value']
+            f[1] = FabConstant(f[1].get('value', None))
 
         elif f[0] == 'uuid':
             f[1] = FabUUID(f[1].get('seed', None))
@@ -200,9 +205,6 @@ def carota(rows=ROWS,
         for f in fields:
             if f[0] == 'index':
                 y.append(r + index_start)
-
-            elif f[0] == 'constant':
-                y.append(constant)
 
             elif f[0] == 'firstname':
                 gender, name = get_firstname(f[1].get('gender', None))

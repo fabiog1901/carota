@@ -5,7 +5,7 @@ import argparse
 ENCLOSER = ''
 DELIMITER = ','
 ROWS = 10
-TEXT = 'ssn::seed=12;tel::seed=345'
+TEXT = 'constant::value=ginoooo'
 OUTPUT = ''
 CHUNK_SIZE = 100000
 
