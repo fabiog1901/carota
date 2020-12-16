@@ -89,7 +89,9 @@ Example `field1; field2::option1=value1,option2=value2; field3`
 | lastname  | generate lastname                              |         |                         |
 |           |                                                | seed    | None                    |
 | firstname | generate firstname                             | gender  | 'f' or 'm'              |
+|           |                                                | seed    | None                    |
 | gender    | generate gender ('F' or 'M')                   |         |                         |
+|           |                                                | seed    | None                    |
 
 ### Example
 
