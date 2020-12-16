@@ -5,7 +5,7 @@ import argparse
 ENCLOSER = ''
 DELIMITER = ','
 ROWS = 10
-TEXT = 'constant::value=ginoooo'
+TEXT = 'firstname::seed=0; gender'
 OUTPUT = ''
 CHUNK_SIZE = 100000
 
