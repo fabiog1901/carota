@@ -6,6 +6,9 @@ import random
 import string
 import uuid
 import itertools
+import multiprocessing as mp
+
+SENTINEL = 'SENTINEL'
 
 # Data
 LASTNAME = ['Abbott','Acevedo','Acosta','Adams','Adkins','Aguilar','Aguirre','Alexander','Ali','Allen','Allison','Alvarado','Alvarez','Andersen','Anderson','Andrade','Andrews','Anthony','Archer','Arellano','Arias','Armstrong','Arnold','Arroyo','Ashley','Atkins','Atkinson','Austin','Avery','Avila','Ayala','Ayers','Bailey','Baird','Baker','Baldwin','Ball','Ballard','Banks','Barajas','Barber','Barker','Barnes','Barnett','Barr','Barrera','Barrett','Barron','Barry','Bartlett','Barton','Bass','Bates','Bauer','Bautista','Baxter','Bean','Beard','Beasley','Beck','Becker','Bell','Beltran','Bender','Benitez','Benjamin','Bennett','Benson','Bentley','Benton','Berg','Berger','Bernard','Berry','Best','Bird','Bishop','Black','Blackburn','Blackwell','Blair','Blake','Blanchard','Blankenship','Blevins','Bolton','Bond','Bonilla','Booker','Boone','Booth','Bowen','Bowers','Bowman','Boyd','Boyer','Boyle','Bradford','Bradley','Bradshaw','Brady','Branch','Brandt','Braun','Bray','Brennan','Brewer','Bridges','Briggs','Bright','Brock','Brooks','Brown','Browning','Bruce','Bryan','Bryant','Buchanan','Buck','Buckley','Bullock','Burch','Burgess','Burke','Burnett','Burns','Burton','Bush','Butler','Byrd','Cabrera','Cain','Calderon','Caldwell','Calhoun','Callahan','Camacho','Cameron','Campbell','Campos','Cannon','Cantrell','Cantu','Cardenas','Carey','Carlson','Carney','Carpenter','Carr','Carrillo','Carroll','Carson','Carter','Case','Casey','Castaneda','Castillo','Castro','Cervantes','Chambers','Chan','Chandler','Chaney','Chang','Chapman','Charles','Chase','Chavez','Chen','Cherry','Choi','Christensen','Christian','Chung','Church','Cisneros','Clark','Clarke','Clay','Clayton','Clements','Cline','Cobb','Cochran','Coffey','Cohen','Cole','Coleman','Collier','Collins','Colon','Combs','Compton','Conley','Conner','Conrad','Contreras','Conway','Cook','Cooke','Cooley','Cooper','Copeland','Cordova','Cortez','Costa','Cowan','Cox','Craig','Crane','Crawford','Crosby','Cross','Cruz','Cuevas','Cummings','Cunningham','Curry','Curtis','Dalton','Daniel','Daniels','Daugherty','Davenport','David','Davidson','Davies','Davila','Davis','Dawson','Day','Dean','Decker','Delacruz','Deleon','Delgado','Dennis','Diaz','Dickerson','Dickson','Dillon','Dixon','Dodson','Dominguez','Donaldson','Donovan','Dorsey','Dougherty','Douglas','Downs','Doyle','Drake','Duarte','Dudley','Duffy','Duke','Duncan','Dunlap','Dunn','Duran','Durham','Dyer','Eaton','Edwards','Elliott','Ellis','Ellison','English','Erickson','Escobar','Esparza','Espinoza','Estes','Estrada','Evans','Everett','Ewing','Farley','Farmer','Farrell','Faulkner','Ferguson','Fernandez','Ferrell','Fields','Figueroa','Finley','Fischer','Fisher','Fitzgerald','Fitzpatrick','Fleming','Fletcher','Flores','Flowers','Floyd','Flynn','Foley','Forbes','Ford','Foster','Fowler','Fox','Francis','Franco','Frank','Franklin','Frazier','Frederick','Freeman','French','Frey','Friedman','Fritz','Frost','Fry','Frye','Fuentes','Fuller','Gaines','Gallagher','Gallegos','Galloway','Galvan','Gamble','Garcia','Gardner','Garner','Garrett','Garrison','Garza','Gates','Gay','Gentry','George','Ghirardello','Gibbs','Gibson','Gilbert','Giles','Gill','Gillespie','Gilmore','Glass','Glenn','Glover','Golden','Gomez','Gonzales','Gonzalez','Good','Goodman','Goodwin','Gordon','Gould','Graham','Grant','Graves','Gray','Green','Greene','Greer','Gregory','Griffin','Griffith','Grimes','Gross','Guerra','Guerrero','Gutierrez','Guzman','Haas','Hahn','Hale','Haley','Hall','Hamilton','Hammond','Hampton','Hancock','Haney','Hanna','Hansen','Hanson','Hardin','Harding','Hardy','Harmon','Harper','Harrell','Harrington','Harris','Harrison','Hart','Hartman','Harvey','Hatfield','Hawkins','Hayden','Hayes','Haynes','Hays','Heath','Hebert','Henderson','Hendricks','Hendrix','Henry','Hensley','Henson','Herman','Hernandez','Herrera','Herring','Hess','Hester','Hickman','Hicks','Higgins','Hill','Hines','Hinton','Ho','Hobbs','Hodge','Hodges','Hoffman','Hogan','Holden','Holder','Holland','Holloway','Holmes','Holt','Hood','Hooper','Hoover','Hopkins','Horn','Horne','Horton','House','Houston','Howard','Howe','Howell','Huang','Hubbard','Huber','Hudson','Huerta','Huff','Huffman','Hughes','Hull','Humphrey','Hunt','Hunter','Hurley','Hurst','Hutchinson','Huynh','Ibarra','Ingram','Irwin','Jackson','Jacobs','Jacobson','James','Jarvis','Jefferson','Jenkins','Jennings','Jensen','Jimenez','Johns','Johnson','Johnston','Jones','Jordan','Joseph','Joyce','Juarez','Kaiser','Kane','Kaufman','Keith','Keller','Kelley','Kelly','Kemp','Kennedy','Kent','Kerr','Key','Khan','Kidd','Kim','King','Kirby','Kirk','Klein','Kline','Knapp','Knight','Knox','Koch','Kramer','Krause','Krueger','Lam','Lamb','Lambert','Landry','Lane','Lang','Lara','Larsen','Larson','Lawrence','Lawson','Le','Leach','Leblanc','Lee','Leon','Leonard','Lester','Levine','Levy','Lewis','Li','Lin','Lindsey','Little','Liu','Livingston','Lloyd','Logan','Long','Lopez','Love','Lowe','Lowery','Lozano','Lucas','Lucero','Luna','Lutz','Lynch','Lynn','Lyons','Macdonald','Macias','Mack','Madden','Maddox','Mahoney','Maldonado','Malone','Mann','Manning','Marks','Marquez','Marsh','Marshall','Martin','Martinez','Mason','Massey','Mata','Mathews','Mathis','Matthews','Maxwell','May','Mayer','Maynard','Mayo','Mays','Mcbride','Mccall','Mccann','Mccarthy','Mccarty','Mcclain','Mcclure','Mcconnell','Mccormick','Mccoy','Mccullough','Mcdaniel','Mcdonald','Mcdowell','Mcfarland','Mcgee','Mcgrath','Mcguire','Mcintosh','Mcintyre','Mckay','Mckee','Mckenzie','Mckinney','Mcknight','Mclaughlin','Mclean','Mcmahon','Mcmillan','Mcneil','Mcpherson','Meadows','Medina','Mejia','Melendez','Melton','Mendez','Mendoza','Mercado','Mercer','Merritt','Meyer','Meyers','Meza','Michael','Middleton','Miles','Miller','Mills','Miranda','Mitchell','Molina','Monroe','Montes','Montgomery','Montoya','Moody','Moon','Mooney','Moore','Mora','Morales','Moran','Moreno','Morgan','Morris','Morrison','Morrow','Morse','Morton','Moses','Mosley','Moss','Moyer','Mueller','Mullen','Mullins','Munoz','Murillo','Murphy','Murray','Myers','Nash','Navarro','Neal','Nelson','Newman','Newton','Nguyen','Nichols','Nicholson','Nielsen','Nixon','Noble','Nolan','Norman','Norris','Norton','Novak','Nunez','Obrien','Ochoa','Oconnell','Oconnor','Odom','Odonnell','Oliver','Olsen','Olson','Oneal','Oneill','Orozco','Orr','Ortega','Ortiz','Osborn','Osborne','Owen','Owens','Pace','Pacheco','Padilla','Page','Palmer','Park','Parker','Parks','Parrish','Parsons','Patel','Patrick','Patterson','Patton','Paul','Payne','Pearson','Peck','Pena','Pennington','Perez','Perkins','Perry','Peters','Petersen','Peterson','Petty','Pham','Phelps','Phillips','Pierce','Pineda','Pittman','Pitts','Pollard','Ponce','Poole','Pope','Porter','Potter','Potts','Powell','Powers','Pratt','Preston','Price','Prince','Proctor','Pruitt','Pugh','Quinn','Ramirez','Ramos','Ramsey','Randall','Randolph','Rangel','Rasmussen','Ray','Raymond','Reed','Reese','Reeves','Reid','Reilly','Reyes','Reynolds','Rhodes','Rice','Rich','Richard','Richards','Richardson','Richmond','Riddle','Riggs','Riley','Rios','Ritter','Rivas','Rivera','Rivers','Roach','Robbins','Roberson','Roberts','Robertson','Robinson','Robles','Rocha','Rodgers','Rodriguez','Rogers','Rojas','Rollins','Roman','Romero','Rosales','Rosario','Rose','Ross','Roth','Rowe','Rowland','Roy','Rubio','Ruiz','Rush','Russell','Russo','Ryan','Salas','Salazar','Salinas','Sampson','Sanchez','Sanders','Sandoval','Sanford','Santana','Santiago','Santos','Saunders','Savage','Sawyer','Schaefer','Schmidt','Schmitt','Schneider','Schroeder','Schultz','Schwartz','Scott','Sellers','Serrano','Sexton','Shaffer','Shah','Shannon','Sharp','Shaw','Shea','Shelton','Shepard','Shepherd','Sheppard','Sherman','Shields','Short','Silva','Simmons','Simon','Simpson','Sims','Singh','Singleton','Skinner','Sloan','Small','Smith','Snow','Snyder','Solis','Solomon','Sosa','Soto','Sparks','Spears','Spence','Spencer','Stafford','Stanley','Stanton','Stark','Steele','Stein','Stephens','Stephenson','Stevens','Stevenson','Stewart','Stokes','Stone','Stout','Strickland','Strong','Stuart','Suarez','Sullivan','Summers','Sutton','Swanson','Sweeney','Tanner','Tapia','Tate','Taylor','Terrell','Terry','Thomas','Thompson','Thornton','Todd','Torres','Townsend','Tran','Travis','Trevino','Trujillo','Tucker','Turner','Tyler','Underwood','Valdez','Valencia','Valentine','Valenzuela','Vance','Vang','Vargas','Vasquez','Vaughan','Vaughn','Vazquez','Vega','Velasquez','Velazquez','Velez','Villa','Villanueva','Villarreal','Villegas','Vincent','Wade','Wagner','Walker','Wall','Wallace','Waller','Walls','Walsh','Walter','Walters','Walton','Wang','Ward','Ware','Warner','Warren','Washington','Waters','Watkins','Watson','Watts','Weaver','Webb','Weber','Webster','Weeks','Weiss','Welch','Wells','Werner','West','Wheeler','Whitaker','White','Whitehead','Whitney','Wiggins','Wilcox','Wiley','Wilkerson','Wilkins','Wilkinson','Williams','Williamson','Willis','Wilson','Winters','Wise','Wolf','Wolfe','Wong','Wood','Woodard','Woods','Woodward','Wright','Wu','Wyatt','Yang','Yates','Yoder','York','Young','Yu','Zamora','Zavala','Zhang','Zimmerman','Zuniga']
@@ -22,7 +25,7 @@ GENDER_LIST = ['F', 'M']
 # Arguments
 ENCLOSER = ''
 DELIMITER = ','
-ROWS = 10
+ROWS = 5
 TEXT = 'index; uuid; firstname; lastname; int::start=18,end=95; date::delta=365'
 OUTPUT = ''
 CHUNK_SIZE = 100000
@@ -48,21 +51,24 @@ class FabDate:
         second = self.rd.randint(0, 59)
         millis = self.rd.randint(0, 999999)
 
-        yield datetime.datetime.combine(date, datetime.time(hour, minute, second, millis)).strftime(self.format)
+        for _ in range(ROWS):
+            yield datetime.datetime.combine(date, datetime.time(hour, minute, second, millis)).strftime(self.format)
 
 class FabConstant:
     def __init__(self, value):
         self.value = value
 
     def generator(self):
-        yield self.value
+        for _ in range(ROWS):
+            yield self.value
 
 class FabIndex:
     def __init__(self, start):
         self.counter = itertools.count(int(start))
 
     def generator(self):
-        yield next(self.counter)
+        for _ in range(ROWS):
+            yield next(self.counter)
 
 class FabUUID:
     def __init__(self, seed):
@@ -71,7 +77,8 @@ class FabUUID:
             self.rd.seed(int(seed))
 
     def generator(self):
-        yield uuid.UUID(int=self.rd.getrandbits(128), version=4)
+        for _ in range(ROWS):
+            yield uuid.UUID(int=self.rd.getrandbits(128), version=4)
 
 class FabInt:
     def __init__(self, start, end, seed):
@@ -82,7 +89,8 @@ class FabInt:
             self.rd.seed(int(seed))
 
     def generator(self):
-        yield self.rd.randint(self.start, self.end)
+        for _ in range(ROWS):
+            yield self.rd.randint(self.start, self.end)
 
 class FabString:
     def __init__(self, size, seed):
@@ -92,7 +100,8 @@ class FabString:
             self.rd.seed(int(seed))
 
     def generator(self):
-        yield ''.join(self.rd.choice(string.ascii_letters + string.digits) for x in range(self.size))
+        for _ in range(ROWS):
+            yield ''.join(self.rd.choice(string.ascii_letters + string.digits) for x in range(self.size))
 
 class FabChoices:
     def __init__(self, choices, weights, seed):
@@ -106,7 +115,8 @@ class FabChoices:
             self.rd.seed(int(seed))
 
     def generator(self):
-        yield self.rd.choices(self.choices, weights=self.weights, k=1)[0]
+        for _ in range(ROWS):
+            yield self.rd.choices(self.choices, weights=self.weights, k=1)[0]
 
 class FabLastName:
     def __init__(self, seed):
@@ -115,7 +125,8 @@ class FabLastName:
             self.rd.seed(int(seed))
 
     def generator(self):
-        yield self.rd.choice(LASTNAME)
+        for _ in range(ROWS):
+            yield self.rd.choice(LASTNAME)
 
 class FabTel:
     def __init__(self, seed):
@@ -124,7 +135,8 @@ class FabTel:
             self.rd.seed(int(seed))
 
     def generator(self):
-        yield '(' + f'{self.rd.randint(100, 999):03}' + ') ' + f'{self.rd.randint(1, 999):03}' + '-' + f'{self.rd.randint(1, 9999):04}'
+        for _ in range(ROWS):
+            yield '(' + f'{self.rd.randint(100, 999):03}' + ') ' + f'{self.rd.randint(1, 999):03}' + '-' + f'{self.rd.randint(1, 9999):04}'
 
 class FabSSN:
     def __init__(self, seed):
@@ -133,7 +145,8 @@ class FabSSN:
             self.rd.seed(int(seed))
 
     def generator(self):
-        yield f'{self.rd.randint(1, 999):03}' + '-' + f'{self.rd.randint(1, 99):02}' + '-' + f'{self.rd.randint(1, 9999):04}'
+        for _ in range(ROWS):
+            yield f'{self.rd.randint(1, 999):03}' + '-' + f'{self.rd.randint(1, 99):02}' + '-' + f'{self.rd.randint(1, 9999):04}'
 
 class FabFirstName:
     def __init__(self, gndr, seed):
@@ -156,15 +169,19 @@ class FabFirstName:
             # 0 = female, 1 = male
             if self.rd.randint(0, 1):
                 gender = 0
-                yield self.rd.choice(FEMALE_NAMES)
+                for _ in range(ROWS):
+                    yield self.rd.choice(FEMALE_NAMES)
             else:
                 gender = 1
-                yield self.rd.choice(MALE_NAMES)
+                for _ in range(ROWS):
+                    yield self.rd.choice(MALE_NAMES)
 
         elif self.gender == 0:
-            yield self.rd.choice(FEMALE_NAMES)
+            for _ in range(ROWS):
+                yield self.rd.choice(FEMALE_NAMES)
         else:
-            yield self.rd.choice(MALE_NAMES) 
+            for _ in range(ROWS):
+                yield self.rd.choice(MALE_NAMES) 
    
 class FabGender:
     def __init__(self, seed):
@@ -173,7 +190,8 @@ class FabGender:
             self.rd.seed(int(seed))
         
     def generator(self):
-        yield self.rd.choice(GENDER_LIST) if gender is None else GENDER_LIST[int(gender)]
+        for _ in range(ROWS):
+            yield self.rd.choice(GENDER_LIST) if gender is None else GENDER_LIST[int(gender)]
 
 def get_fields(text):
     fields = [x.strip().split("::") for x in text.split(';')]
@@ -231,8 +249,60 @@ def carota(rows=ROWS,
             encloser=ENCLOSER, 
             output=OUTPUT, 
             chunk_size=CHUNK_SIZE):
-    
+
     fields = get_fields(text)
 
-    for _ in range(rows):
-        yield delimiter.join([f'{encloser}{x}{encloser}' for x in [next(f[1].generator()) for f in fields]])
+    for res in multiproc():
+        yield DELIMITER.join([f'{ENCLOSER}{x}{ENCLOSER}' for x in res ])
+
+
+def _worker(i, barrier, queue, gen_func, gen_args):
+    for x in gen_func(*gen_args):
+        # print(f"WORKER-{i} sending item.")
+        queue.put((i, x))
+        barrier.wait()
+    queue.put(SENTINEL)
+
+
+def multiproc():
+    """Construct and yield from parallel generators
+     build from `gen_func(gen_args)`.
+     """
+    # gen_args_tuples = list(gen_args_tuples)  # ensure list
+    n_gens = 3 # len(gen_args_tuples) # + 1
+    sentinels = [SENTINEL] * n_gens
+    queue = mp.SimpleQueue()
+    barrier = mp.Barrier(n_gens + 1)  # `parties`: + 1 for parent
+
+    processes = []
+
+    processes.append(
+        mp.Process(target=_worker, args=(10, barrier, queue, FabUUID(0).generator, ()))
+    )
+    processes.append(
+        mp.Process(target=_worker, args=(11, barrier, queue, FabUUID(1).generator, ()))
+    )
+    processes.append(
+        mp.Process(target=_worker, args=(12, barrier, queue, FabInt(1, 100, 0).generator, ()))
+    )
+
+    for p in processes:
+        p.start()
+
+    while True:
+        results = [queue.get() for _ in range(n_gens)]
+        if results != sentinels:
+            results.sort()
+            yield tuple(r[1] for r in results)  # sort and drop ids
+            barrier.wait()  # all workers are waiting
+            # already, so this will unblock immediately
+        else:
+            break
+
+    for p in processes:
+        p.join()
+
+
+
+
+

@@ -1,13 +1,30 @@
 from carota import carota
 import argparse
+import time
+from functools import wraps
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 
+    
 # Arguments
 ENCLOSER = ''
 DELIMITER = ','
 ROWS = 10
 TEXT = 'index; uuid::seed=0; firstname::seed=0; lastname::seed=0; int::start=18,end=95,seed=0; date::delta=365,seed=0'
 OUTPUT = ''
-CHUNK_SIZE = 100000
+CHUNK_SIZE = 1000000
+
+
+def timeit(method):
+    @wraps(method)
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = method(*args, **kwargs)
+        print(f"{method.__name__} => {time.time() - start_time:.2f}s")
+
+        return result
+
+    return wrapper
+
 
 def getArgs():
     """ Get command line args """
@@ -28,18 +45,25 @@ def getArgs():
     return parser.parse_args()
 
 
+@timeit
+def writedown(l, path):
+    with open(path, 'a') as f:
+        f.write('\n'.join(l) + '\n')
 
+@timeit
 def main():
     options = getArgs()
 
     # trick to allow passing tab as a delimiter   
     options.DELIMITER = '\t' if options.DELIMITER == '\\t' else options.DELIMITER
 
-    iterator = carota.carota(rows = int(options.ROWS), 
+    iterator = carota(rows = int(options.ROWS), 
                         text = options.TEXT, 
                         delimiter = options.DELIMITER, 
                         encloser = options.ENCLOSER)
     
+
+
     l = []
     hasMore = True
     sum = 0
@@ -62,12 +86,14 @@ def main():
                     hasMore = False
                     break
             
-            with open(options.OUTPUT, 'a') as f:
-                f.write('\n'.join(l) + '\n')
+            writedown(l, options.OUTPUT)
+            # with open(options.OUTPUT, 'a') as f:
+            #     f.write('\n'.join(l) + '\n')
 
             sum = sum + i + 1
             print("written lines: " + str(sum))
             l=[]
+
             
 if __name__ == "__main__":
-    main() ##
+    main()
