@@ -10,6 +10,7 @@ ENCLOSER = ''
 DELIMITER = ','
 ROWS = 10
 TEXT = 'index; uuid::seed=0; firstname::seed=0; lastname::seed=0; int::start=18,end=95,seed=0; date::delta=365,seed=0'
+# TEXT = 'uuid::seed=0; uuid::seed=1; uuid::seed=10'
 OUTPUT = ''
 CHUNK_SIZE = 1000000
 
@@ -62,7 +63,6 @@ def main():
                         delimiter = options.DELIMITER, 
                         encloser = options.ENCLOSER)
     
-
 
     l = []
     hasMore = True
