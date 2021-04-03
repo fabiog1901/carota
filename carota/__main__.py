@@ -1,3 +1,5 @@
+#!/bin/env/python
+
 from carota import carota
 import argparse
 import time
